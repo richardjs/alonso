@@ -1,0 +1,11 @@
+.container {
+  max-width: 500px;
+  padding-top: 10px;
+}
+
+.tile {
+  background: white;
+  border: none;
+  border: 2px solid;
+  border-color: #ddd;
+}
