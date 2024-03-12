@@ -5,7 +5,7 @@
 #include "bitboards.h"
 
 
-void state_print(uint64_t state) {
+void state_draw(uint64_t state) {
     for (int i = 0; i < 5; i++) {
         for (int j = 0; j < 5; j++) {
             int tilei = i*5 + j;
