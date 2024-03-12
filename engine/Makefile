@@ -1,6 +1,6 @@
 CFLAGS=-std=gnu17 -Wall -O3
 
-objects=alonso.o bitboards.o
+objects=alonso.o bitboards.o state.o
 
 alonso: $(objects)
 
