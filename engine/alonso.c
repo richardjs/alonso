@@ -16,7 +16,7 @@
 #define PUSH_UP_TILES 0b0000010001100011000111111
 #define PUSH_DOWN_TILES 0b1111110001100011000100000
 #define PUSH_LEFT_TILES 0b0111100001000010000101111
-#define PUSH_RIGHT_TILES 0b1111010000100001000010000
+#define PUSH_RIGHT_TILES 0b1111010000100001000011110
 
 #define bitscan(x) __builtin_ctz(x)
 #define bitscanl(x) __builtin_clz(x)
@@ -226,9 +226,4 @@ int main() {
     uint64_t children[MAX_CHILDREN];
     int childrenc = state_children(0, children);
     printf("%d\n", childrenc);
-
-    for (int i = 0; i < childrenc; i++) {
-        state_print(children[i]);
-        getc(stdin);
-    }
 }
