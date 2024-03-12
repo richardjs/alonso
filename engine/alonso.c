@@ -15,6 +15,8 @@
 #define EDGE_TILES 0b1111110001100011000111111
 #define PUSH_UP_TILES 0b0000010001100011000111111
 #define PUSH_DOWN_TILES 0b1111110001100011000100000
+#define PUSH_LEFT_TILES 0b0111100001000010000101111
+#define PUSH_RIGHT_TILES 0b1111010000100001000010000
 
 #define bitscan(x) __builtin_ctz(x)
 #define bitscanl(x) __builtin_clz(x)
@@ -77,6 +79,62 @@ uint64_t DOWN_B[25] = {
     0b1000010000100001000010000
 };
 
+uint64_t LEFT_B[25] = {
+                        0b11111,
+                        0b11110,
+                        0b11100,
+                        0b11000,
+    0,
+                   0b1111100000,
+                   0b1111000000,
+                   0b1110000000,
+                   0b1100000000,
+    0,
+              0b111110000000000,
+              0b111100000000000,
+              0b111000000000000,
+              0b110000000000000,
+    0,
+         0b11111000000000000000,
+         0b11110000000000000000,
+         0b11100000000000000000,
+         0b11000000000000000000,
+    0,
+    0b1111100000000000000000000,
+    0b1111000000000000000000000,
+    0b1110000000000000000000000,
+    0b1100000000000000000000000,
+    0
+};
+
+uint64_t RIGHT_B[25] = {
+    0,
+                           0b11,
+                          0b111,
+                         0b1111,
+                        0b11111,
+    0,
+                      0b1100000,
+                     0b11100000,
+                    0b111100000,
+                   0b1111100000,
+    0,
+                 0b110000000000,
+                0b1110000000000,
+               0b11110000000000,
+              0b111110000000000,
+    0,
+            0b11000000000000000,
+           0b111000000000000000,
+          0b1111000000000000000,
+         0b11111000000000000000,
+    0,
+       0b1100000000000000000000,
+      0b11100000000000000000000,
+     0b111100000000000000000000,
+    0b1111100000000000000000000
+};
+
 
 void state_print(uint64_t state) {
     for (int i = 0; i < 5; i++) {
@@ -136,6 +194,26 @@ uint8_t state_children(uint64_t state, uint64_t children[]) {
 
             children[childrenc++] = (((state & b) << 5) & b) | (state & ~b) | dest;
         }
+
+        if (tile & PUSH_LEFT_TILES) {
+            uint8_t desti = (tilei / 5) * 5 + 4;
+            uint64_t dest = 1llu << desti;
+
+            uint64_t b = LEFT_B[tilei];
+            b |= b << 32;
+
+            children[childrenc++] = (((state & b) >> 1) & b) | (state & ~b) | dest;
+        }
+
+        if (tile & PUSH_RIGHT_TILES) {
+            uint8_t desti = (tilei / 5) * 5;
+            uint64_t dest = 1llu << desti;
+
+            uint64_t b = RIGHT_B[tilei];
+            b |= b << 32;
+
+            children[childrenc++] = (((state & b) << 1) & b) | (state & ~b) | dest;
+        }
     }
 
     return childrenc;
@@ -146,5 +224,11 @@ int main() {
     uint64_t s = 0b0000000000000100011101010000010000000000011000100000100000001000;
 
     uint64_t children[MAX_CHILDREN];
-    state_children(s, children);
+    int childrenc = state_children(0, children);
+    printf("%d\n", childrenc);
+
+    for (int i = 0; i < childrenc; i++) {
+        state_print(children[i]);
+        getc(stdin);
+    }
 }
