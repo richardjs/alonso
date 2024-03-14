@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "bitboards.h"
 #include "state.h"
+#include "stateio.h"
 
 
 int main() {
