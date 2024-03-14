@@ -1,24 +1,91 @@
+#include <stdint.h>
+#include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+#include <unistd.h>
 #include "bitboards.h"
+#include "errors.h"
 #include "state.h"
 #include "stateio.h"
 
 
-int main() {
-    uint64_t s = 0b0000000000000100011101010000010000000000011000100000100000001000;
+#define VERSION ".1a"
+
+
+enum Command {
+    NONE,
+    LIST_ACTIONS,
+    ACT
+};
+
+
+int main(int argc, char* argv[])
+{
+    fprintf(stderr, "Alonso v%s (built %s %s)\n", VERSION, __DATE__, __TIME__);
+
+    enum Command command = NONE;
+    char state_string[STATE_STRING_SIZE];
+    char *action;
+
+    int opt;
+    while ((opt = getopt(argc, argv, "a:lv")) != -1) {
+        switch(opt) {
+        case 'a':
+            command = ACT;
+            action = optarg;
+            break;
+
+        case 'l':
+            command = LIST_ACTIONS;
+            break;
+
+        case 'v':
+            return 0;
+        }
+    }
+
+    if (argc == optind) {
+        fprintf(stderr, "No state provided\n");
+        exit(ERROR_NO_STATE_GIVEN);
+    }
+
+    uint64_t state = state_from_string(argv[optind]);
+    fprintf(stderr, "Input state: %s\n", argv[optind]);
+    state_draw(state);
 
     uint64_t children[MAX_ACTIONS];
-    int c = state_children(0, children);
-    printf("%d\n", c);
+    int c = state_children(state, children);
 
-    state_draw(s);
+    char actions[MAX_ACTIONS][ACTION_STRING_SIZE];
+    state_action_strings(state, actions);
 
-    char state_string[STATE_STRING_SIZE];
-    state_to_string(s, state_string);
-    printf("%s\n", state_string);
+    switch(command) {
+    case NONE:
+        fprintf(stderr, "No command provided\n");
+        exit(ERROR_NO_COMMAND);
 
-    state_draw(state_from_string(state_string));
+    case LIST_ACTIONS:
+        for (int i = 0; i < c; i++) {
+            fprintf(stderr, "%s\n", actions[i]);
+        }
+        break;
 
-    char action_strings[MAX_ACTIONS][ACTION_STRING_SIZE];
-    c = state_action_strings(0, action_strings);
+    case ACT:
+        for (int i = 0; i < c; i++) {
+            if (strcmp(action, actions[i]) == 0) {
+                state = children[i];
+                state_to_string(state, state_string);
+                fprintf(stderr, "Output state: %s\n", state_string);
+                state_draw(state);
+                printf("%s\n", state_string);
+                goto command_done;
+            }
+        }
+        fprintf(stderr, "Invalid action");
+        exit(ERROR_INVALID_ACTION);
+    }
+
+    command_done:
+
+    return 0;
 }
