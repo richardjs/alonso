@@ -18,7 +18,7 @@ uint64_t state_open_tiles(uint64_t state) {
 uint8_t state_children(uint64_t state, uint64_t children[]) {
     uint64_t open_tiles = state_open_tiles(state);
 
-    uint8_t childrenc = 0;
+    uint8_t c = 0;
     while(open_tiles) {
         uint8_t tilei = bitscan(open_tiles);
         uint64_t tile = 1llu << tilei;
@@ -32,7 +32,7 @@ uint8_t state_children(uint64_t state, uint64_t children[]) {
             uint64_t b = UP_B[tilei];
             b |= b << 32;
 
-            children[childrenc++] = (((state & b) >> 5) & b) | (state & ~b) | dest;
+            children[c++] = (((state & b) >> 5) & b) | (state & ~b) | dest;
         }
 
         if (tile & PUSH_DOWN_TILES) {
@@ -42,7 +42,7 @@ uint8_t state_children(uint64_t state, uint64_t children[]) {
             uint64_t b = DOWN_B[tilei];
             b |= b << 32;
 
-            children[childrenc++] = (((state & b) << 5) & b) | (state & ~b) | dest;
+            children[c++] = (((state & b) << 5) & b) | (state & ~b) | dest;
         }
 
         if (tile & PUSH_LEFT_TILES) {
@@ -52,7 +52,7 @@ uint8_t state_children(uint64_t state, uint64_t children[]) {
             uint64_t b = LEFT_B[tilei];
             b |= b << 32;
 
-            children[childrenc++] = (((state & b) >> 1) & b) | (state & ~b) | dest;
+            children[c++] = (((state & b) >> 1) & b) | (state & ~b) | dest;
         }
 
         if (tile & PUSH_RIGHT_TILES) {
@@ -62,9 +62,9 @@ uint8_t state_children(uint64_t state, uint64_t children[]) {
             uint64_t b = RIGHT_B[tilei];
             b |= b << 32;
 
-            children[childrenc++] = (((state & b) << 1) & b) | (state & ~b) | dest;
+            children[c++] = (((state & b) << 1) & b) | (state & ~b) | dest;
         }
     }
 
-    return childrenc;
+    return c;
 }

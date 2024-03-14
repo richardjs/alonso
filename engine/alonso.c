@@ -7,9 +7,9 @@
 int main() {
     uint64_t s = 0b0000000000000100011101010000010000000000011000100000100000001000;
 
-    uint64_t children[MAX_CHILDREN];
-    int childrenc = state_children(0, children);
-    printf("%d\n", childrenc);
+    uint64_t children[MAX_ACTIONS];
+    int c = state_children(0, children);
+    printf("%d\n", c);
 
     state_draw(s);
 
@@ -18,4 +18,7 @@ int main() {
     printf("%s\n", state_string);
 
     state_draw(state_from_string(state_string));
+
+    char action_strings[MAX_ACTIONS][ACTION_STRING_SIZE];
+    c = state_action_strings(0, action_strings);
 }

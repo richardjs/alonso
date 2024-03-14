@@ -5,7 +5,7 @@
 #include "bitboards.h"
 
 
-#define MAX_CHILDREN (4*2 + 3*4*3)
+#define MAX_ACTIONS (4*2 + 3*4*3)
 
 
 uint64_t state_swap_players(uint64_t state);
