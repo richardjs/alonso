@@ -1,8 +1,10 @@
 CFLAGS=-std=gnu17 -Wall -O3
 
-objects=alonso.o bitboards.o state.o stateio.o
+objects=bitboards.o state.o stateio.o
 
 alonso: $(objects)
+
+test: $(objects)
 
 clean:
 	rm -f *.o

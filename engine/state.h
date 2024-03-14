@@ -13,4 +13,8 @@ uint64_t state_open_tiles(uint64_t state);
 uint8_t state_children(uint64_t state, uint64_t children[]);
 
 
+uint64_t state_from_index(uint64_t index);
+uint64_t state_to_index(uint64_t state);
+
+
 #endif
