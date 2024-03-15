@@ -1,7 +1,7 @@
 import Tile from "./Tile.js";
 import { e } from "./shortcuts.js";
 
-export default function Board() {
+export default function Board({ state, handleActionInput }) {
   React.useEffect(() => {
     resizeBoard();
   });
@@ -13,7 +13,14 @@ export default function Board() {
     for (let j = 0; j < 5; j++) {
       let tilei = 5 * i + j;
 
-      row.push(e(Tile, { key: j, tilei: tilei }));
+      row.push(
+        e(Tile, {
+          key: j,
+          tilei: tilei,
+          symbol: state[tilei],
+          handleActionInput,
+        }),
+      );
     }
 
     rows.push(e("div", { className: "row", key: i }, row));

@@ -101,7 +101,8 @@ uint64_t state_from_index(uint64_t index)
 }
 
 
-uint64_t intpow(uint64_t n, int e) {
+uint64_t intpow(uint64_t n, int e)
+{
     int x = 1;
     for (int i = 0; i < e; i++){
         x *= n;
