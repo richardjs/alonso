@@ -33,7 +33,9 @@ uint8_t state_children(uint64_t state, uint64_t children[])
             uint64_t b = UP_B[tilei];
             b |= b << 32;
 
-            children[c++] = (((state & b) >> 5) & b) | (state & ~b) | dest;
+            children[c++] = state_swap_players(
+                (((state & b) >> 5) & b) | (state & ~b) | dest
+            );
         }
 
         if (tile & PUSH_DOWN_TILES) {
@@ -43,7 +45,9 @@ uint8_t state_children(uint64_t state, uint64_t children[])
             uint64_t b = DOWN_B[tilei];
             b |= b << 32;
 
-            children[c++] = (((state & b) << 5) & b) | (state & ~b) | dest;
+            children[c++] = state_swap_players(
+                (((state & b) << 5) & b) | (state & ~b) | dest
+            );
         }
 
         if (tile & PUSH_LEFT_TILES) {
@@ -53,7 +57,9 @@ uint8_t state_children(uint64_t state, uint64_t children[])
             uint64_t b = LEFT_B[tilei];
             b |= b << 32;
 
-            children[c++] = (((state & b) >> 1) & b) | (state & ~b) | dest;
+            children[c++] = state_swap_players(
+                (((state & b) >> 1) & b) | (state & ~b) | dest
+            );
         }
 
         if (tile & PUSH_RIGHT_TILES) {
@@ -63,7 +69,9 @@ uint8_t state_children(uint64_t state, uint64_t children[])
             uint64_t b = RIGHT_B[tilei];
             b |= b << 32;
 
-            children[c++] = (((state & b) << 1) & b) | (state & ~b) | dest;
+            children[c++] = state_swap_players(
+                (((state & b) << 1) & b) | (state & ~b) | dest
+            );
         }
     }
 
@@ -92,6 +100,7 @@ uint64_t state_from_index(uint64_t index)
     return state;
 }
 
+
 uint64_t intpow(uint64_t n, int e) {
     int x = 1;
     for (int i = 0; i < e; i++){
@@ -99,6 +108,7 @@ uint64_t intpow(uint64_t n, int e) {
     }
     return x;
 }
+
 
 uint64_t state_to_index(uint64_t state)
 {

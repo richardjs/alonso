@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
 
     case LIST_ACTIONS:
         for (int i = 0; i < c; i++) {
-            fprintf(stderr, "%s\n", actions[i]);
+            printf("%s\n", actions[i]);
         }
         break;
 
