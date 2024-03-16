@@ -65,6 +65,10 @@ int main(int argc, char* argv[])
         exit(ERROR_NO_COMMAND);
 
     case LIST_ACTIONS:
+        if (state_score(state) != 0) {
+            fprintf(stderr, "Terminal state\n");
+            break;
+        }
         for (int i = 0; i < c; i++) {
             printf("%s\n", actions[i]);
         }

@@ -38,6 +38,8 @@ def alonso(*args) -> (str, str):
 
 def get_actions(state: str) -> (list[str], str):
     stdout, stderr = alonso("-l", state)
+    if stdout == '':
+        return ([], stderr)
     return (stdout.strip().split("\n"), stderr)
 
 
