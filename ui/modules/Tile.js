@@ -30,6 +30,7 @@ const TILE_NAMES = [
 
 export default function Tile({
   tilei,
+  player,
   symbol,
   actions,
   actionInput,
@@ -56,6 +57,13 @@ export default function Tile({
     className += " inputBuffer";
   }
 
+  let displaySymbol = "";
+  if (symbol == "x") {
+    displaySymbol = ["X", "O"][player - 1];
+  } else if (symbol == "o") {
+    displaySymbol = ["O", "X"][player - 1];
+  }
+
   return e(
     "button",
     {
@@ -63,6 +71,6 @@ export default function Tile({
       onClick: handleClick,
       disabled,
     },
-    symbol == "." ? "" : symbol,
+    displaySymbol,
   );
 }

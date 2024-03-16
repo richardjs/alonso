@@ -7,6 +7,7 @@ export default function App() {
   );
   const [actions, setActions] = React.useState({});
   const [actionInput, setActionInput] = React.useState("");
+  const [player, setPlayer] = React.useState(1);
 
   React.useEffect(() => {
     function handleHashChange() {
@@ -48,6 +49,7 @@ export default function App() {
     for (const action in actions) {
       if (action == newActionInput) {
         location.hash = actions[action];
+        setPlayer(player === 1 ? 2 : 1);
         setActionInput("");
         break;
       } else if (action.startsWith(newActionInput)) {
@@ -57,5 +59,5 @@ export default function App() {
     }
   }
 
-  return e(Board, { state, actions, actionInput, handleActionInput });
+  return e(Board, { state, player, actions, actionInput, handleActionInput });
 }

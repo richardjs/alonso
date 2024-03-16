@@ -3,6 +3,7 @@ import { e } from "./shortcuts.js";
 
 export default function Board({
   state,
+  player,
   actions,
   actionInput,
   handleActionInput,
@@ -27,6 +28,7 @@ export default function Board({
         e(Tile, {
           key: j,
           tilei: tilei,
+          player,
           symbol,
           actions,
           actionInput,
