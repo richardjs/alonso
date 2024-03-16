@@ -49,7 +49,7 @@ export default function Tile({
     }
   }
 
-  let className = "col tile";
+  let className = "col fs-1 tile";
 
   if (actionInput == tileName) {
     disabled = false;
