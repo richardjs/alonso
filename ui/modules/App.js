@@ -5,7 +5,7 @@ export default function App() {
   const [state, setState] = React.useState(
     location.hash.slice(1) || ".........................",
   );
-  const [actions, setActions] = React.useState([]);
+  const [actions, setActions] = React.useState({});
   const [actionInput, setActionInput] = React.useState("");
 
   React.useEffect(() => {
@@ -38,6 +38,11 @@ export default function App() {
   }, [state]);
 
   function handleActionInput(actionInputPart) {
+    if (actionInputPart == actionInput) {
+      setActionInput("");
+      return;
+    }
+
     const newActionInput = actionInput + actionInputPart;
 
     for (const action in actions) {
@@ -52,5 +57,5 @@ export default function App() {
     }
   }
 
-  return e(Board, { state, handleActionInput });
+  return e(Board, { state, actions, actionInput, handleActionInput });
 }

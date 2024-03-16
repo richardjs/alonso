@@ -28,14 +28,39 @@ const TILE_NAMES = [
   "e5",
 ];
 
-export default function Tile({ tilei, symbol, handleActionInput }) {
+export default function Tile({
+  tilei,
+  symbol,
+  actions,
+  actionInput,
+  handleActionInput,
+}) {
   function handleClick(e) {
     handleActionInput(TILE_NAMES[tilei]);
   }
 
+  const tileName = TILE_NAMES[tilei];
+  const actionPart = actionInput + tileName;
+  let disabled = true;
+  for (const [action, state] of Object.entries(actions)) {
+    if (action.startsWith(actionPart)) {
+      disabled = false;
+      break;
+    }
+  }
+
+  // To allow cancelling of actions
+  if (actionInput == tileName) {
+    disabled = false;
+  }
+
   return e(
     "button",
-    { className: "col tile", onClick: handleClick },
+    {
+      className: "col tile",
+      onClick: handleClick,
+      disabled,
+    },
     symbol == "." ? "" : symbol,
   );
 }
