@@ -15,7 +15,8 @@ uint64_t state_open_tiles(uint64_t state);
 uint8_t state_children(uint64_t state, uint64_t children[]);
 
 
-int8_t state_score(uint64_t state);
+float state_score(uint64_t state);
+int8_t state_has_win(uint64_t);
 
 
 uint64_t state_from_index(uint64_t index);

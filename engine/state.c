@@ -79,21 +79,36 @@ uint8_t state_children(uint64_t state, uint64_t children[])
 }
 
 
-int8_t state_score(uint64_t state)
+float state_score(uint64_t state)
 {
     for (int i = 0; i < NUM_WINS; i++) {
         if ((state & O_WINS[i]) == O_WINS[i]) {
-            return -1;
+            return -1.0;
         }
     }
 
     for (int i = 0; i < NUM_WINS; i++) {
         if ((state & X_WINS[i]) == X_WINS[i]) {
-            return 1;
+            return 1.0;
         }
     }
 
-    return 0;
+    return 0.0;
+}
+
+
+int8_t state_has_win(uint64_t state)
+{
+    uint64_t children[MAX_ACTIONS];
+    uint8_t childrenc = state_children(state, children);
+
+    for (int i = 0; i < childrenc; i++) {
+        if (state_score(children[i]) == -1.0) {
+            return i;
+        }
+    }
+
+    return -1;
 }
 
 
