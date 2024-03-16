@@ -15,3 +15,7 @@
   background: #eee;
   cursor: not-allowed;
 }
+
+.inputBuffer {
+    border: 2px dashed;
+}

@@ -49,15 +49,17 @@ export default function Tile({
     }
   }
 
-  // To allow cancelling of actions
+  let className = "col tile";
+
   if (actionInput == tileName) {
     disabled = false;
+    className += " inputBuffer";
   }
 
   return e(
     "button",
     {
-      className: "col tile",
+      className,
       onClick: handleClick,
       disabled,
     },
