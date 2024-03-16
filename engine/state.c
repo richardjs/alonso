@@ -79,6 +79,24 @@ uint8_t state_children(uint64_t state, uint64_t children[])
 }
 
 
+int8_t state_score(uint64_t state)
+{
+    for (int i = 0; i < NUM_WINS; i++) {
+        if ((state & O_WINS[i]) == O_WINS[i]) {
+            return -1;
+        }
+    }
+
+    for (int i = 0; i < NUM_WINS; i++) {
+        if ((state & X_WINS[i]) == X_WINS[i]) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+
 uint64_t state_from_index(uint64_t index)
 {
     uint64_t state = 0;

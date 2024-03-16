@@ -34,4 +34,9 @@ extern const uint64_t LEFT_B[25];
 extern const uint64_t RIGHT_B[25];
 
 
+#define NUM_WINS 12
+extern const uint64_t X_WINS[NUM_WINS];
+extern const uint64_t O_WINS[NUM_WINS];
+
+
 #endif
