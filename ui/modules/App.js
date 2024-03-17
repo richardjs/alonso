@@ -31,7 +31,23 @@ export default function App() {
           setActions(json.actions);
         });
     }
-    fetchActions();
+
+    function think() {
+      fetch("/state/" + state + "/think")
+        .then((response) => response.json())
+        .then((json) => {
+          if (ignore) return;
+          setPlayer(player === 1 ? 2 : 1);
+          location.hash = json.state;
+          console.log(json.log);
+        });
+    }
+
+    if (player == 1) {
+      fetchActions();
+    } else {
+      think();
+    }
 
     return () => {
       ignore = true;
@@ -48,8 +64,8 @@ export default function App() {
 
     for (const action in actions) {
       if (action == newActionInput) {
-        location.hash = actions[action];
         setPlayer(player === 1 ? 2 : 1);
+        location.hash = actions[action];
         setActionInput("");
         break;
       } else if (action.startsWith(newActionInput)) {

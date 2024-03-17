@@ -94,6 +94,7 @@ void Node_free(struct Node *node)
  */
 float simulate(uint64_t state)
 {
+
     results->stats.simulations++;
 
     int turn = 1;
@@ -108,9 +109,13 @@ float simulate(uint64_t state)
             return 0.0;
         }
 
+        if (state_has_win(state) >= 0) {
+            return turn * 1.0;
+        }
+
         state = children[rand() % childrenc];
         childrenc = state_children(state, children);
-        turn *= -1;
+        turn *= -1.0;
     }
 
     return turn * state_score(state);

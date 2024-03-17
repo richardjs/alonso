@@ -52,9 +52,13 @@ export default function Tile({
 
   let className = "col fs-1 tile";
 
-  if (actionInput == tileName) {
-    disabled = false;
-    className += " inputBuffer";
+  if (player == 1) {
+    if (actionInput == tileName) {
+      disabled = false;
+      className += " inputBuffer";
+    }
+  } else {
+    disabled = true;
   }
 
   let displaySymbol = "";

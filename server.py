@@ -27,6 +27,10 @@ class ActionsResponse(EngineResponse):
     actions: dict[str, str]
 
 
+class ThinkResponse(ActionsResponse):
+    state: str
+
+
 def alonso(*args) -> (str, str):
     p = run([ALONSO] + list(args), capture_output=True, encoding="utf-8")
 
@@ -50,6 +54,18 @@ async def state_actions(state: str = Path(pattern=STATE_REGEX)) -> ActionsRespon
         action: alonso("-a", action, state)[0].strip() for action in actions
     }
     return ActionsResponse(actions=action_states, log=stderr)
+
+
+@app.get("/state/{state}/think", response_model=ThinkResponse)
+async def state_think(state: str = Path(regex=STATE_REGEX)) -> ThinkResponse:
+    new_state, stderr = alonso(f"-t", "-w", str(WORKERS), "-i", str(ITERATIONS), state)
+    actions, _ = get_actions(new_state)
+    action_states = {
+        action: alonso("-a", action, new_state)[0].strip() for action in actions
+    }
+    return ThinkResponse(
+        state=new_state, actions=action_states, log=stderr
+    )
 
 
 app.mount("/", StaticFiles(directory="ui", html=True))

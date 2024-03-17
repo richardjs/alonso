@@ -36,17 +36,21 @@ int main(int argc, char* argv[])
     char state_string[STATE_STRING_SIZE];
     char *action;
 
-    int workers = 1;
+    uint8_t workers = 1;
 
     struct MCTSOptions options;
     MCTSOptions_default(&options);
 
     int opt;
-    while ((opt = getopt(argc, argv, "a:ltvw:")) != -1) {
+    while ((opt = getopt(argc, argv, "a:li:tvw:")) != -1) {
         switch(opt) {
         case 'a':
             command = ACT;
             action = optarg;
+            break;
+
+        case 'i':
+            options.iterations = atoi(optarg);
             break;
 
         case 'l':
@@ -116,6 +120,11 @@ int main(int argc, char* argv[])
     case THINK:
     }
 
+    if (state_score(state) != 0) {
+        fprintf(stderr, "Terminal state\n");
+        goto command_done;
+    }
+
     if (state_has_win(state) > 0) {
         fprintf(stderr, "Taking win\n");
         fprintf(stderr, "result: win\n");
@@ -160,6 +169,7 @@ int main(int argc, char* argv[])
         results.stats.nodes += worker_results.stats.nodes;
         results.stats.tree_bytes += worker_results.stats.tree_bytes;
         results.stats.simulations += worker_results.stats.simulations;
+        results.stats.depth_outs += worker_results.stats.depth_outs;
     }
 
     struct timeval end;
@@ -194,8 +204,6 @@ int main(int argc, char* argv[])
         }
     }
 
-    printf("%s\n", actions[results.actioni]);
-
     fprintf(stderr, "action:\t\t%s\n", actions[results.actioni]);
     fprintf(stderr, "score:\t\t%.2f\n", results.score);
 
@@ -205,8 +213,10 @@ int main(int argc, char* argv[])
     fprintf(stderr, "iters/s:\t%ld\n",
         results.stats.duration ?
             1000 * results.stats.iterations / results.stats.duration : 0);
-    fprintf(stderr, "tree size:\t%ld mib\n",
+    fprintf(stderr, "tree size:\t%ld MiB\n",
         results.stats.tree_bytes / 1024 / 1024);
+    fprintf(stderr, "depth outs:\t%.2f%%\n",
+        100.0*results.stats.depth_outs/results.stats.iterations);
 
     for (int i = 1; i < TOP_ACTIONS; i++) {
         float score = -1 * results.nodes[top_actionis[i]].value / results.nodes[top_actionis[i]].visits;
