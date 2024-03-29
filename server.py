@@ -57,7 +57,7 @@ async def state_actions(state: str = Path(pattern=STATE_REGEX)) -> ActionsRespon
 
 
 @app.get("/state/{state}/think", response_model=ThinkResponse)
-async def state_think(state: str = Path(regex=STATE_REGEX)) -> ThinkResponse:
+async def state_think(state: str = Path(pattern=STATE_REGEX)) -> ThinkResponse:
     new_state, stderr = alonso(f"-t", "-w", str(WORKERS), "-i", str(ITERATIONS), state)
     actions, _ = get_actions(new_state)
     action_states = {
