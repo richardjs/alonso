@@ -11,6 +11,11 @@
   cursor: pointer;
 }
 
+.tile:disabled {
+  background: #f9f9f9;
+  cursor: default;
+}
+
 .inputBuffer {
   border: 2px dashed;
 }
