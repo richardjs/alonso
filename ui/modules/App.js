@@ -1,6 +1,20 @@
 import Board from "./Board.js";
 import { e } from "./shortcuts.js";
 
+function NewGameButton() {
+  return e(
+    "button",
+    {
+      className: "btn btn-danger",
+      style: { width: "100%" },
+      onClick: () => {
+        if (confirm("New game?")) window.location = "";
+      },
+    },
+    "New game",
+  );
+}
+
 export default function App() {
   const [state, setState] = React.useState(
     location.hash.slice(1) || ".........................",
@@ -75,5 +89,14 @@ export default function App() {
     }
   }
 
-  return e(Board, { state, player, actions, actionInput, handleActionInput });
+  return e(
+    "div",
+    null,
+    e(Board, { state, player, actions, actionInput, handleActionInput }),
+    e(
+      "div",
+      { className: "row mt-4" },
+      e("div", { className: "col ps-0" }, NewGameButton()),
+    ),
+  );
 }
