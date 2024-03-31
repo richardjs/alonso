@@ -122,6 +122,13 @@ int main(int argc, char* argv[])
 
     if (state_score(state) != 0) {
         fprintf(stderr, "Terminal state\n");
+
+        if (state_score(state) == 1) {
+            fprintf(stderr, "result: win\n");
+        } else if (state_score(state) == -1) {
+            fprintf(stderr, "result: loss\n");
+        }
+
         goto command_done;
     }
 
