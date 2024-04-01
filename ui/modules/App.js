@@ -23,6 +23,25 @@ export default function App() {
   const [actionInput, setActionInput] = React.useState("");
   const [player, setPlayer] = React.useState(1);
 
+  const [iterations, setIterations] = React.useState(
+    localStorage.getItem("iterations") || 5000,
+  );
+  const [workers, setWorkers] = React.useState(
+    localStorage.getItem("workers") || 1,
+  );
+  const [waitingForAI, setWaitingForAI] = React.useState(false);
+  const [score, setScore] = React.useState("");
+
+  function handleIterationsChange(e) {
+    setIterations(e.target.value);
+    localStorage.setItem("iterations", e.target.value);
+  }
+
+  function handleWorkersChange(e) {
+    setWorkers(e.target.value);
+    localStorage.setItem("workers", e.target.value);
+  }
+
   React.useEffect(() => {
     function handleHashChange() {
       setState(location.hash.slice(1));
@@ -47,13 +66,30 @@ export default function App() {
     }
 
     function think() {
-      fetch("/state/" + state + "/think")
+      fetch("/state/" + state + "/think", {
+        headers: [
+          ["Iterations", iterations],
+          ["Workers", workers],
+        ],
+      })
         .then((response) => response.json())
         .then((json) => {
           if (ignore) return;
           setPlayer(player === 1 ? 2 : 1);
           location.hash = json.state;
           console.log(json.log);
+
+          let logLines = json.log.split("\n");
+          let score = "";
+          for (let i = 0; i < logLines.length; i++) {
+            let line = logLines[i];
+            if (!line.startsWith("score")) continue;
+
+            score = line.split("\t").at(-1);
+            break;
+          }
+
+          setScore(score);
         });
     }
 
@@ -93,6 +129,33 @@ export default function App() {
     "div",
     null,
     e(Board, { state, player, actions, actionInput, handleActionInput }),
+    e(AIOptions, {
+      //waitingForLimits:
+      //  this.props.max_iterations === null ||
+      //  this.props.min_iterations === null ||
+      //  this.props.max_workers === null ||
+      //  this.props.min_workers === null,
+      //max_iterations: this.state.max_iterations,
+      //min_iterations: this.state.min_iterations,
+      //max_workers: this.state.max_workers,
+      //min_workers: this.state.min_workers,
+      max_iterations: 100000,
+      min_iterations: 5000,
+      max_workers: 4,
+      min_workers: 1,
+      iterations: iterations,
+      workers: workers,
+      //player1_ai: this.state.player1_ai,
+      //player2_ai: this.state.player2_ai,
+      waitingForAI: waitingForAI,
+      //waitingForHint: this.state.waitingForHint,
+      //hint: this.state.hint,
+      score: score,
+      handleIterationsChange: handleIterationsChange,
+      handleWorkersChange: handleWorkersChange,
+      //handleHintClick: this.handleHintClick,
+      //onPlayerAIChange: this.onPlayerAIChange,
+    }),
     e(
       "div",
       { className: "row mt-4" },

@@ -19,3 +19,8 @@
 .inputBuffer {
   border: 2px dashed;
 }
+
+.ai-options {
+  margin-top: 20px;
+  padding: 5px;
+}

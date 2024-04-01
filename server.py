@@ -1,7 +1,8 @@
 from os import environ
 from subprocess import run
+from typing import Annotated
 
-from fastapi import FastAPI, HTTPException, Path
+from fastapi import FastAPI, Header, HTTPException, Path
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
@@ -9,6 +10,11 @@ from pydantic import BaseModel
 WORKERS = 4
 ITERATIONS = 10000
 
+MAX_ITERATIONS = 100000
+MIN_ITERATIONS = 5000
+
+MAX_WORKERS = 4
+MIN_WORKERS = 1
 
 ALONSO = environ.get("ALONSO", "./engine/alonso")
 
@@ -42,7 +48,7 @@ def alonso(*args) -> (str, str):
 
 def get_actions(state: str) -> (list[str], str):
     stdout, stderr = alonso("-l", state)
-    if stdout == '':
+    if stdout == "":
         return ([], stderr)
     return (stdout.strip().split("\n"), stderr)
 
@@ -57,15 +63,26 @@ async def state_actions(state: str = Path(pattern=STATE_REGEX)) -> ActionsRespon
 
 
 @app.get("/state/{state}/think", response_model=ThinkResponse)
-async def state_think(state: str = Path(pattern=STATE_REGEX)) -> ThinkResponse:
-    new_state, stderr = alonso(f"-t", "-w", str(WORKERS), "-i", str(ITERATIONS), state)
+async def state_think(
+    state: str = Path(pattern=STATE_REGEX),
+    workers: Annotated[str | None, Header()] = None,
+    iterations: Annotated[str | None, Header()] = None,
+) -> ThinkResponse:
+
+    if workers:
+        workers = min(int(workers), MAX_WORKERS)
+        workers = max(workers, MIN_WORKERS)
+
+    if iterations:
+        iterations = min(int(iterations), MAX_ITERATIONS)
+        iterations = max(iterations, MIN_ITERATIONS)
+
+    new_state, stderr = alonso(f"-t", "-w", str(workers), "-i", str(iterations), state)
     actions, _ = get_actions(new_state)
     action_states = {
         action: alonso("-a", action, new_state)[0].strip() for action in actions
     }
-    return ThinkResponse(
-        state=new_state, actions=action_states, log=stderr
-    )
+    return ThinkResponse(state=new_state, actions=action_states, log=stderr)
 
 
 app.mount("/", StaticFiles(directory="ui", html=True))
