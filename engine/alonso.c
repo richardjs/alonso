@@ -37,16 +37,21 @@ int main(int argc, char* argv[])
     char *action;
 
     uint8_t workers = 1;
+    float uctc = DEFAULT_UCTC;
 
     struct MCTSOptions options;
     MCTSOptions_default(&options);
 
     int opt;
-    while ((opt = getopt(argc, argv, "a:li:tvw:")) != -1) {
+    while ((opt = getopt(argc, argv, "a:c:li:tvw:")) != -1) {
         switch(opt) {
         case 'a':
             command = ACT;
             action = optarg;
+            break;
+
+        case 'c':
+            uctc = atof(optarg);
             break;
 
         case 'i':
@@ -84,6 +89,8 @@ int main(int argc, char* argv[])
 
     char actions[MAX_ACTIONS][ACTION_STRING_SIZE];
     state_action_strings(state, actions);
+
+    options.uctc = uctc;
 
     time_t seed = time(NULL);
     srand(seed);
@@ -224,6 +231,7 @@ int main(int argc, char* argv[])
         results.stats.tree_bytes / 1024 / 1024);
     fprintf(stderr, "depth outs:\t%.2f%%\n",
         100.0*results.stats.depth_outs/results.stats.iterations);
+    fprintf(stderr, "UCTC:\t\t%.2f\n", options.uctc);
 
     for (int i = 1; i < TOP_ACTIONS; i++) {
         float score = -1 * results.nodes[top_actionis[i]].value / results.nodes[top_actionis[i]].visits;
