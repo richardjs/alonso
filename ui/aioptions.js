@@ -91,7 +91,7 @@ class AIOptions extends React.Component {
             disabled: this.props.waitingForLimits,
             min: this.props.min_iterations,
             max: this.props.max_iterations,
-            step: 5000,
+            step: 500,
             value: Math.max(
               Math.min(this.props.iterations, this.props.max_iterations),
               this.props.min_iterations,
