@@ -110,7 +110,7 @@ class AIOptions extends React.Component {
             id: "iterations",
             min: this.props.min_iterations,
             max: this.props.max_iterations,
-            step: 1000,
+            step: 100,
             value: Math.max(
               Math.min(this.props.iterations, this.props.max_iterations),
               this.props.min_iterations,
