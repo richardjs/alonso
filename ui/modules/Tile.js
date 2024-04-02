@@ -31,6 +31,7 @@ const TILE_NAMES = [
 export default function Tile({
   tilei,
   player,
+  player_no,
   symbol,
   actions,
   actionInput,
@@ -63,9 +64,17 @@ export default function Tile({
 
   let displaySymbol = "";
   if (symbol == "x") {
-    displaySymbol = ["X", "O"][player - 1];
+    if (player_no === "1") {
+      displaySymbol = "X";
+    } else {
+      displaySymbol = "O";
+    }
   } else if (symbol == "o") {
-    displaySymbol = ["O", "X"][player - 1];
+    if (player_no === "1") {
+      displaySymbol = "O";
+    } else {
+      displaySymbol = "X";
+    }
   }
 
   return e(

@@ -1,6 +1,14 @@
 import Board from "./Board.js";
 import { e } from "./shortcuts.js";
 
+function otherPlayerNo(playerNo) {
+  if (playerNo === "1") {
+    return "2";
+  } else {
+    return "1";
+  }
+}
+
 function NewGameButton() {
   return e(
     "button",
@@ -17,7 +25,7 @@ function NewGameButton() {
 
 export default function App() {
   const [state, setState] = React.useState(
-    location.hash.slice(1) || ".........................",
+    location.hash.slice(1, 26) || ".........................",
   );
   const [actions, setActions] = React.useState({});
   const [actionInput, setActionInput] = React.useState("");
@@ -32,6 +40,8 @@ export default function App() {
   const [waitingForAI, setWaitingForAI] = React.useState(false);
   const [score, setScore] = React.useState("");
 
+  const [playerNo, setPlayerNo] = React.useState(location.hash[26] | "1");
+
   function handleIterationsChange(e) {
     setIterations(e.target.value);
     localStorage.setItem("iterations", e.target.value);
@@ -44,8 +54,10 @@ export default function App() {
 
   React.useEffect(() => {
     function handleHashChange() {
-      setState(location.hash.slice(1));
+      setState(location.hash.slice(1, 26));
     }
+    setPlayerNo(location.hash[26] | "1");
+
     window.addEventListener("hashchange", handleHashChange);
 
     return () => {
@@ -76,7 +88,13 @@ export default function App() {
         .then((json) => {
           if (ignore) return;
           setPlayer(player === 1 ? 2 : 1);
-          location.hash = json.state;
+
+          if (json.state) {
+            location.hash = json.state + otherPlayerNo(playerNo);
+          } else {
+            setActions([]);
+          }
+
           console.log(json.log);
 
           let logLines = json.log.split("\n");
@@ -89,7 +107,9 @@ export default function App() {
             break;
           }
 
-          setScore(score);
+          if (json.score) {
+            setScore(score);
+          }
         });
     }
 
@@ -115,7 +135,8 @@ export default function App() {
     for (const action in actions) {
       if (action == newActionInput) {
         setPlayer(player === 1 ? 2 : 1);
-        location.hash = actions[action];
+
+        location.hash = actions[action] + otherPlayerNo(playerNo);
         setActionInput("");
         break;
       } else if (action.startsWith(newActionInput)) {
@@ -128,7 +149,14 @@ export default function App() {
   return e(
     "div",
     null,
-    e(Board, { state, player, actions, actionInput, handleActionInput }),
+    e(Board, {
+      state,
+      player,
+      playerNo,
+      actions,
+      actionInput,
+      handleActionInput,
+    }),
     e(AIOptions, {
       //waitingForLimits:
       //  this.props.max_iterations === null ||
