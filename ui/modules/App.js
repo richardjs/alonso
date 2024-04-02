@@ -92,11 +92,10 @@ export default function App() {
             if (!line.startsWith("score")) continue;
 
             score = line.split("\t").at(-1);
-            break;
-          }
 
-          if (json.score) {
             setScore(score);
+
+            break;
           }
         });
     }
