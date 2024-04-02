@@ -57,8 +57,23 @@ int main()
     {
         char state_string[] = ".........................";
         uint64_t state = state_from_string(state_string);
-        if (state_has_win(state) > 0) {
+        if (state_has_win(state) >= 0) {
             printf("detected false win for %s\n", state_string);
+        }
+    }
+
+
+    puts("starting");
+    {
+        char state_string[] = "oxoxxoox.oooo.oxxxoxxooxx";
+        uint64_t state = state_from_string(state_string);
+        int8_t win = state_has_win(state);
+        if (win >= 0) {
+            printf("detected false win for %s\n", state_string);
+            uint64_t children[MAX_ACTIONS];;
+            state_children(state, children);
+            state_draw(children[win]);
+            printf("child score: %f\n", state_score(children[win]));
         }
     }
 

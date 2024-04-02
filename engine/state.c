@@ -97,13 +97,33 @@ float state_score(uint64_t state)
 }
 
 
+// This is for if we're looking for this in the context of a parent
+// state, like in state_has_win--we need to see if the child has a
+// win to know if the parent made a child win (and thus lost)
+float state_score_inverse_priority(uint64_t state)
+{
+    for (int i = 0; i < NUM_WINS; i++) {
+        if ((state & X_WINS[i]) == X_WINS[i]) {
+            return 1.0;
+        }
+    }
+
+    for (int i = 0; i < NUM_WINS; i++) {
+        if ((state & O_WINS[i]) == O_WINS[i]) {
+            return -1.0;
+        }
+    }
+
+    return 0.0;
+}
+
 int8_t state_has_win(uint64_t state)
 {
     uint64_t children[MAX_ACTIONS];
     uint8_t childrenc = state_children(state, children);
 
     for (int i = 0; i < childrenc; i++) {
-        if (state_score(children[i]) == -1.0) {
+        if (state_score_inverse_priority(children[i]) == -1.0) {
             return i;
         }
     }
