@@ -147,7 +147,7 @@ export default function App() {
       //max_workers: this.state.max_workers,
       //min_workers: this.state.min_workers,
       max_iterations: 50000,
-      min_iterations: 500,
+      min_iterations: 100,
       max_workers: 4,
       min_workers: 1,
       iterations: iterations,
