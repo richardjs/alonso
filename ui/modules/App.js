@@ -78,7 +78,7 @@ export default function App() {
           setPlayer(player === 1 ? 2 : 1);
 
           if (json.state) {
-            location.hash = json.state + otherPlayerNo(playerNo);
+            location.hash = json.state;
           } else {
             setActions([]);
           }
